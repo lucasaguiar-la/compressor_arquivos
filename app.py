@@ -1,22 +1,15 @@
 import os
 from time import sleep
 from PIL import Image
-from PyPDF2 import PdfWriter, PdfReader
 
 main_path = os.path.dirname(os.path.abspath(__file__))
 output_path = os.path.join(main_path, "arquivos")
+pdf_program_path = os.path.join(f"{main_path}\\pdf_reduce\\")
 
-def reduce_pdf():
-    with open(output_path+"\\"+filename, "rb") as input_file:
-        reader = PdfReader(input_file)
-        writer = PdfWriter()
-
-        for page in reader.pages:
-            page.compress_content_streams()
-            writer.add_page(page)
-        with open(output_path+"\\"+filename, "wb") as output_file:
-            writer.write(output_file)
-
+def reduce_pdf(file):
+    path = (f"{pdf_program_path}pdfsizeopt")
+    print(f"{path} --use-pngout=no {file} {file}")
+    os.system(f"{path} --use-pngout=no {file} {file}")
 
 def reduce_img(size, quality=10):
     print(f"\nArquivo:{filename} | Tamanho original: {size / 1024:.2f} MB")
@@ -37,4 +30,4 @@ for filename in os.listdir(output_path):
             reduce_img(size)
     elif filename.endswith(".pdf"):
         if size > 1500:
-            reduce_pdf()
+            reduce_pdf(filename)
